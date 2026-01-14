@@ -22,13 +22,12 @@ def origin():
         "time":current.strftime("%d-%m-%y %H:%M")
     }
 
-
-
     data2=json.dumps(data, indent=4)
     print(data2)
     with open('janv_core.json', 'w')as f:
         f.write(data2)
-        
+
+
 def today_date():
 
     current= datetime.datetime.now() 
@@ -44,6 +43,50 @@ def today_date():
     print(f"JANV: Okay, so Today's date is:{date}")
     # time.sleep(2)
     print(f"JANV: ..and current time is:{time}")
+
+
+def add_responses():
+    try:
+        with open ("responses.json", 'r')as f:
+            responses_json=json.load(f)
+    
+    except FileNotFoundError:
+        responses_json={
+        "apps":[],
+        "command":[],
+        "new command":[],
+        "unknown command":[],
+        "learn command":[],
+        "listening":[],
+        "exit":[],
+        "error":[]
+    }
+
+    for _ in range(100):
+            add_response=input('Add response to JANV: ').strip()
+
+            if add_response.lower()=='break':
+                print("JANV: stopping response Entry.")
+                break
+            
+            command_type=input(
+                "JANV: type (apps /command /New command /unknown command /learn command /listening /exit/ error  : ) "
+                ).lower()
+
+            if command_type in responses_json:
+                if add_response not in responses_json:
+                    responses_json[command_type].append(add_response)
+                    print(f"JANV: response save under {command_type}.")
+                else:
+                    print("JANV: this response Already Exist.")
+                    continue
+            else:
+                print("JANV: Unknown Category! try again.")
+                continue
+
+            with open("responses.json", "w")as f:
+                json.dump(responses_json, f, indent=4)
+    return responses_json
 
 
 def add_command():
@@ -125,4 +168,11 @@ while True:
         print("JANV: Got it..")
         print('\n')
         execute_command()
+
+    elif user=="add response":
+        print("JANV: okay. working on it.")
+        time.sleep(2)
+        add_responses()
+        
+
     

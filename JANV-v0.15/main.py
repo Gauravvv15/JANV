@@ -3,6 +3,14 @@ import datetime
 import json
 import webbrowser
 import time
+import random
+
+
+def init_janv():
+
+    if os.path.exists("janv_core.json") == False:
+        print("SOFTWARE: First time setup detached~")
+        origin()
 
 def origin():
     current= datetime.datetime.now() 
@@ -27,31 +35,38 @@ def origin():
     with open('janv_core.json', 'w')as f:
         f.write(data2)
 
+def janv_say(category):
+    if responses.get(category):
+        return random.choice(responses[category])
 
+    else:
+        return "---"
 def today_date():
 
     current= datetime.datetime.now() 
     special_date=current.strftime("%d-%m") 
     date=current.strftime("%d-%m-%y") 
-    time=current.strftime("%H:%M:%S")
+    timecurrent=current.strftime("%H:%M:%S")
 
     if special_date=="15-01":
+        time.sleep(2)
         print("JANV: this date matters.")
-        print("JANV: (whisper quitly)Happy Birthday Janhavi.")
-        # time.sleep(4)
+        time.sleep(4)
+        print("JANV: (whisper quitely) Happy Birthday, JJ.")
+        time.sleep(5)
 
     print(f"JANV: Okay, so Today's date is:{date}")
-    # time.sleep(2)
-    print(f"JANV: ..and current time is:{time}")
+    print(f"JANV: ..and current time is:{timecurrent}")
 
 
-def add_responses():
+def load_responses():
+
     try:
         with open ("responses.json", 'r')as f:
-            responses_json=json.load(f)
+            return json.load(f)
     
     except FileNotFoundError:
-        responses_json={
+        return{
         "apps":[],
         "command":[],
         "new command":[],
@@ -61,6 +76,11 @@ def add_responses():
         "exit":[],
         "error":[]
     }
+        
+responses=load_responses()
+
+
+def add_responses(responses):
 
     for _ in range(100):
             add_response=input('Add response to JANV: ').strip()
@@ -73,20 +93,24 @@ def add_responses():
                 "JANV: type (apps /command /New command /unknown command /learn command /listening /exit/ error  : ) "
                 ).lower()
 
-            if command_type in responses_json:
-                if add_response not in responses_json:
-                    responses_json[command_type].append(add_response)
-                    print(f"JANV: response save under {command_type}.")
+            if command_type in responses:
+
+                if add_response not in responses[command_type]:
+                    responses[command_type].append(add_response)
+                    print("JANV:", janv_say("new command"))
+
                 else:
                     print("JANV: this response Already Exist.")
                     continue
+
             else:
-                print("JANV: Unknown Category! try again.")
+                print("JANV:", janv_say("unknown command"))
+                print("JANV: Unknown Category!")
                 continue
 
-            with open("responses.json", "w")as f:
-                json.dump(responses_json, f, indent=4)
-    return responses_json
+    with open("responses.json", "w")as f:
+        json.dump(responses, f, indent=4) 
+    return responses
 
 
 def add_command():
@@ -103,13 +127,13 @@ def add_command():
         key=input("Enter the Command : ").lower()
         time.sleep(3)
         if key.lower()=='break':
-            print('JANV: Okay, stoppping command entry.')
+            print('JANV: Okay, stopping command entry.')
             break
         value=input("Enter the path or URL: ")
       
         commands[key]=value
-        print('wait a second working on it!')
-        time.sleep(3)
+        print("JANV:", janv_say("new command"))
+        time.sleep(2)
         print(f"JANV: Got it! command {key} has been saved.")
 
     with open('commands.json', 'w') as file:
@@ -124,55 +148,61 @@ def execute_command():
     if command in commands:
         path=commands[command]
     else:
-        print('JANV: This command is not in the file!')
+        print("JANV:", janv_say("unknown command"))
         print('\n')
-        makecommand=input("JANV:I don't know this command yet,\n You want me to learn this?: ").lower()
+        makecommand=input(f"JANV: {janv_say('learn command')}").lower()
         if makecommand !='no':
             add_command()
             return
         if makecommand =='no':
-            print("JANV: okay. you can do tihs later.")
+            print("JANV: Understood.")
             return
     
     if path.startswith('https'):
-        print('JANV: working on it..')
+        print("JANV:", janv_say("apps"))
         time.sleep(2)
         webbrowser.open(path)
         print('JANV: Done.')
     else:
 
-        print('JANV: Got it..')
+        print("JANV:", janv_say("apps"))
         time.sleep(2)
         os.startfile(path)
         print('JANV: Done.')
 
 
-# origin()
+init_janv()
 
-print('JANV acitve! ')
+print('\nJANV acitve! ')
 while True:
     time.sleep(2)
-    user=input('JANV: hey Gaurav what can i do for you.: ').lower()
+    user=input(f"{janv_say('listening')}: ").lower()
     time.sleep(1)
 
     
-    if user=="todays date":
+    if user=="date":
+        time.sleep(3)
         today_date()
 
     elif user=="add command":
-        print("JANV: Got it..")
-        print('\n')
+        time.sleep(2)
+        print("JANV:", janv_say('command'))
         add_command()
 
     elif user=="execute command":
-        print("JANV: Got it..")
-        print('\n')
+        time.sleep(2)
+        print("JANV:", janv_say('command'))
         execute_command()
 
     elif user=="add response":
-        print("JANV: okay. working on it.")
         time.sleep(2)
-        add_responses()
+        print("JANV:", janv_say('command'))
+        add_responses(responses)
+
+    elif user=="break" or "stop":
+        print(f"JANV {janv_say('exit')}")
+        time.sleep(1)
+        break
         
 
     

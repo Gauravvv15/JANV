@@ -200,7 +200,7 @@ while True:
         add_responses(responses)
 
     elif user=="break" or "stop":
-        print(f"JANV {janv_say('exit')}")
+        print(f"JANV: {janv_say('exit')}")
         time.sleep(1)
         break
         

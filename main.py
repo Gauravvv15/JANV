@@ -1,3 +1,7 @@
+# JANV v0.15 — FROZEN BUILD
+# Core features stabilized.
+# Further development paused for learning phase.
+
 import os
 import datetime
 import json
@@ -57,6 +61,7 @@ def today_date():
 
     print(f"JANV: Okay, so Today's date is:{date}")
     print(f"JANV: ..and current time is:{timecurrent}")
+    print('\n')
 
 
 def load_responses():
@@ -125,7 +130,7 @@ def add_command():
 
     for _ in range(size):
         key=input("Enter the Command : ").lower()
-        time.sleep(3)
+        time.sleep(1)
         if key.lower()=='break':
             print('JANV: Okay, stopping command entry.')
             break
@@ -133,7 +138,7 @@ def add_command():
       
         commands[key]=value
         print("JANV:", janv_say("new command"))
-        time.sleep(2)
+        time.sleep(1)
         print(f"JANV: Got it! command {key} has been saved.")
 
     with open('commands.json', 'w') as file:
@@ -175,27 +180,27 @@ init_janv()
 
 print('\nJANV acitve! ')
 while True:
-    time.sleep(2)
+    time.sleep(1)
     user=input(f"{janv_say('listening')}: ").lower()
     time.sleep(1)
 
     
     if user=="date":
-        time.sleep(3)
+        time.sleep(2)
         today_date()
 
     elif user=="add command":
-        time.sleep(2)
+        time.sleep(1)
         print("JANV:", janv_say('command'))
         add_command()
 
     elif user=="execute command":
-        time.sleep(2)
+        time.sleep(1)
         print("JANV:", janv_say('command'))
         execute_command()
 
     elif user=="add response":
-        time.sleep(2)
+        time.sleep(1)
         print("JANV:", janv_say('command'))
         add_responses(responses)
 
